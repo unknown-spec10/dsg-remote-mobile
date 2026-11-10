@@ -1,0 +1,377 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="color-scheme" content="light dark">
+  <meta name="theme-color" content="#F7F5F2" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#161616" media="(prefers-color-scheme: dark)">
+  <meta name="description" content="DSH Remote — control a DeepSeek Harness session from your phone.">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="DSH Remote">
+  <meta name="format-detection" content="telephone=no">
+  <title>DSH Remote</title>
+  <link rel="manifest" href="/manifest.webmanifest">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
+  <!-- Theme resolution lives in app.js: the Host serves a strict
+       script-src 'self' CSP, so this page intentionally carries no inline script. -->
+  <link rel="stylesheet" href="/styles.css?v=20">
+</head>
+<body>
+  <!-- Icon sprite: kept inline so the SPA stays a single network round-trip and
+       never depends on a font or an external icon sheet. Symbols use
+       currentColor so every surface can tint them. -->
+  <svg class="sprite" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg">
+    <symbol id="i-mark" viewBox="0 0 24 24">
+      <circle cx="12" cy="16.4" r="1.7" fill="currentColor" stroke="none"></circle>
+      <path d="M8.1 12.6a5.6 5.6 0 0 1 7.8 0"></path>
+      <path d="M5.2 9.3a10 10 0 0 1 13.6 0"></path>
+    </symbol>
+    <symbol id="i-drawer" viewBox="0 0 24 24">
+      <rect x="3.2" y="4.2" width="17.6" height="15.6" rx="3.4"></rect>
+      <path d="M9.4 4.6v14.8"></path>
+    </symbol>
+    <symbol id="i-more" viewBox="0 0 24 24">
+      <circle cx="5.6" cy="12" r="1.5" fill="currentColor" stroke="none"></circle>
+      <circle cx="12" cy="12" r="1.5" fill="currentColor" stroke="none"></circle>
+      <circle cx="18.4" cy="12" r="1.5" fill="currentColor" stroke="none"></circle>
+    </symbol>
+    <symbol id="i-arrow-up" viewBox="0 0 24 24">
+      <path d="M12 19.2V5.2"></path>
+      <path d="m5.8 11.2 6.2-6.2 6.2 6.2"></path>
+    </symbol>
+    <symbol id="i-stop" viewBox="0 0 24 24">
+      <rect x="7" y="7" width="10" height="10" rx="2.4" fill="currentColor" stroke="none"></rect>
+    </symbol>
+    <symbol id="i-chevron-down" viewBox="0 0 24 24">
+      <path d="m6.2 9.4 5.8 5.8 5.8-5.8"></path>
+    </symbol>
+    <symbol id="i-chevron-right" viewBox="0 0 24 24">
+      <path d="m9.4 6.2 5.8 5.8-5.8 5.8"></path>
+    </symbol>
+    <symbol id="i-check" viewBox="0 0 24 24">
+      <path d="m4.8 12.4 4.7 4.7L19.4 7"></path>
+    </symbol>
+    <symbol id="i-x" viewBox="0 0 24 24">
+      <path d="M6.2 6.2l11.6 11.6M17.8 6.2 6.2 17.8"></path>
+    </symbol>
+    <symbol id="i-terminal" viewBox="0 0 24 24">
+      <rect x="3.2" y="4.2" width="17.6" height="15.6" rx="3.4"></rect>
+      <path d="m7.2 9.6 3.1 2.4-3.1 2.4"></path>
+      <path d="M12.6 14.6h4.2"></path>
+    </symbol>
+    <symbol id="i-alert" viewBox="0 0 24 24">
+      <path d="M12 3.9 2.9 19.6h18.2L12 3.9Z"></path>
+      <path d="M12 9.8v4.1"></path>
+      <path d="M12 17.1h.01"></path>
+    </symbol>
+    <symbol id="i-activity" viewBox="0 0 24 24">
+      <path d="M3.2 12.3h4.1l2.3-6.6 4.2 12.6 2-6h5"></path>
+    </symbol>
+    <symbol id="i-layers" viewBox="0 0 24 24">
+      <path d="m12 3.4 8.6 4.6-8.6 4.6-8.6-4.6L12 3.4Z"></path>
+      <path d="m3.4 12.6 8.6 4.6 8.6-4.6"></path>
+    </symbol>
+    <symbol id="i-sliders" viewBox="0 0 24 24">
+      <path d="M4 7.2h16M4 16.8h16"></path>
+      <circle cx="9.2" cy="7.2" r="2.4"></circle>
+      <circle cx="15.2" cy="16.8" r="2.4"></circle>
+    </symbol>
+    <symbol id="i-wifi-off" viewBox="0 0 24 24">
+      <path d="M3.4 8.8a14.8 14.8 0 0 1 4.5-2.4"></path>
+      <path d="M15.9 6.3a14.7 14.7 0 0 1 4.7 2.5"></path>
+      <path d="M7.1 12.2a9.6 9.6 0 0 1 2.2-1.2"></path>
+      <path d="M15.2 11a9.5 9.5 0 0 1 1.8.9"></path>
+      <path d="M9.6 15.5a5 5 0 0 1 4.8 0"></path>
+      <path d="M12 19h.01"></path>
+      <path d="M4.2 4.2 19.8 19.8"></path>
+    </symbol>
+    <symbol id="i-refresh" viewBox="0 0 24 24">
+      <path d="M20 11.2a8 8 0 1 0-2.4 5.9"></path>
+      <path d="M20 4.8v6.4h-6.4"></path>
+    </symbol>
+    <symbol id="i-copy" viewBox="0 0 24 24">
+      <rect x="9" y="9" width="11" height="11" rx="2.6"></rect>
+      <path d="M15.4 5.6H6.2a1.6 1.6 0 0 0-1.6 1.6v9.2"></path>
+    </symbol>
+    <symbol id="i-trash" viewBox="0 0 24 24">
+      <path d="M4.4 7.2h15.2"></path>
+      <path d="M9.4 7.2V5.4h5.2v1.8"></path>
+      <path d="m6.4 7.4 1 12.2h9.2l1-12.2"></path>
+      <path d="M10.4 11.2v4.8M13.6 11.2v4.8"></path>
+    </symbol>
+    <symbol id="i-device" viewBox="0 0 24 24">
+      <rect x="7" y="3" width="10" height="18" rx="2.6"></rect>
+      <path d="M10.8 17.8h2.4"></path>
+    </symbol>
+    <symbol id="i-plus" viewBox="0 0 24 24">
+      <path d="M12 5.2v13.6M5.2 12h13.6"></path>
+    </symbol>
+    <symbol id="i-link" viewBox="0 0 24 24">
+      <path d="M10.2 13.8a4.4 4.4 0 0 0 6.2 0l2.4-2.4a4.4 4.4 0 0 0-6.2-6.2l-1.2 1.2"></path>
+      <path d="M13.8 10.2a4.4 4.4 0 0 0-6.2 0l-2.4 2.4a4.4 4.4 0 0 0 6.2 6.2l1.2-1.2"></path>
+    </symbol>
+    <symbol id="i-compose" viewBox="0 0 24 24">
+      <path d="M4.8 19.2h3.9L18.9 9a3 3 0 0 0-3.9-3.9L4.8 15.3v3.9Z"></path>
+      <path d="m13.2 6.9 3.9 3.9"></path>
+    </symbol>
+    <symbol id="i-file" viewBox="0 0 24 24">
+      <path d="M6.8 3.6h6.6l4.2 4.2v12.6H6.8V3.6Z"></path>
+      <path d="M13.2 3.8v4.4h4.4"></path>
+    </symbol>
+    <symbol id="i-search" viewBox="0 0 24 24">
+      <circle cx="10.8" cy="10.8" r="6.2"></circle>
+      <path d="m15.4 15.4 4.2 4.2"></path>
+    </symbol>
+    <symbol id="i-globe" viewBox="0 0 24 24">
+      <circle cx="12" cy="12" r="8.4"></circle>
+      <path d="M3.6 12h16.8"></path>
+      <path d="M12 3.6c2.4 2.3 3.6 5.1 3.6 8.4S14.4 18.1 12 20.4c-2.4-2.3-3.6-5.1-3.6-8.4S9.6 5.9 12 3.6Z"></path>
+    </symbol>
+    <symbol id="i-mic" viewBox="0 0 24 24">
+      <rect x="9" y="3.4" width="6" height="10.6" rx="3"></rect>
+      <path d="M5.8 11.6a6.2 6.2 0 0 0 12.4 0"></path>
+      <path d="M12 17.8v3M9.2 20.8h5.6"></path>
+    </symbol>
+    <symbol id="i-bell" viewBox="0 0 24 24">
+      <path d="M6.4 16.8V11a5.6 5.6 0 0 1 11.2 0v5.8l1.7 2.2H4.7l1.7-2.2Z"></path>
+      <path d="M10.1 19.6a1.9 1.9 0 0 0 3.8 0"></path>
+    </symbol>
+    <symbol id="i-camera" viewBox="0 0 24 24">
+      <path d="M4.4 8.6h3.2l1.6-2.2h5.6l1.6 2.2h3.2v10.2H4.4V8.6Z"></path>
+      <circle cx="12" cy="13.6" r="3.2"></circle>
+    </symbol>
+    <symbol id="i-image" viewBox="0 0 24 24">
+      <rect x="3.6" y="4.8" width="16.8" height="14.4" rx="2.8"></rect>
+      <circle cx="8.8" cy="9.8" r="1.5"></circle>
+      <path d="m4.8 17.6 4.6-4.4 3.2 3 2.6-2.4 4 3.8"></path>
+    </symbol>
+    <symbol id="i-pin" viewBox="0 0 24 24">
+      <path d="M9 4.4h6l-.8 5.2 3 3.2H6.8l3-3.2L9 4.4Z"></path>
+      <path d="M12 12.8v6.8"></path>
+    </symbol>
+    <symbol id="i-archive" viewBox="0 0 24 24">
+      <rect x="3.6" y="4.6" width="16.8" height="5" rx="1.6"></rect>
+      <path d="M5.2 9.6v8.2a1.8 1.8 0 0 0 1.8 1.8h10a1.8 1.8 0 0 0 1.8-1.8V9.6"></path>
+      <path d="M9.6 13.4h4.8"></path>
+    </symbol>
+    <symbol id="i-fork" viewBox="0 0 24 24">
+      <circle cx="7" cy="5.4" r="2.1"></circle>
+      <circle cx="7" cy="18.6" r="2.1"></circle>
+      <circle cx="17" cy="8.4" r="2.1"></circle>
+      <path d="M7 7.5v9"></path>
+      <path d="M9.1 5.4h3.4a2.4 2.4 0 0 1 2.4 2.4v.6"></path>
+    </symbol>
+    <symbol id="i-lock" viewBox="0 0 24 24">
+      <rect x="5.4" y="10.4" width="13.2" height="9.4" rx="2.4"></rect>
+      <path d="M8.4 10.2V7.8a3.6 3.6 0 0 1 7.2 0v2.4"></path>
+      <path d="M12 14.2v2"></path>
+    </symbol>
+    <symbol id="i-folder" viewBox="0 0 24 24">
+      <path d="M3.6 6.8a1.8 1.8 0 0 1 1.8-1.8h4.2l2 2.4h6.8a1.8 1.8 0 0 1 1.8 1.8v8.6a1.8 1.8 0 0 1-1.8 1.8H5.4a1.8 1.8 0 0 1-1.8-1.8V6.8Z"></path>
+    </symbol>
+  </svg>
+
+  <!-- Boot / state probe -->
+  <div class="boot" id="boot">
+    <div class="logo-mark logo-mark-lg">
+      <svg class="logo-glyph" aria-hidden="true"><use href="#i-mark"></use></svg>
+    </div>
+    <p class="boot-title">DSH Remote</p>
+    <p class="boot-sub" id="boot-sub">Connecting to DeepSeek Harness…</p>
+    <div class="boot-bar" aria-hidden="true"><span></span></div>
+  </div>
+
+  <!-- Pairing -->
+  <main class="pairing" id="pairing" hidden aria-labelledby="pair-title">
+    <div class="pairing-card">
+      <header class="brand">
+        <div class="logo-mark">
+          <svg class="logo-glyph" aria-hidden="true"><use href="#i-mark"></use></svg>
+        </div>
+        <p class="brand-eyebrow">DeepSeek Harness</p>
+        <h1 class="pair-title" id="pair-title">Pair this phone</h1>
+        <p class="pair-lede">Control your desktop session from your phone. Everything stays on your local network.</p>
+      </header>
+
+      <div class="pair-status" id="pair-status" hidden>
+        <span class="spin pair-status-spin" id="pair-status-spin" aria-hidden="true"></span>
+        <span class="pair-status-text" id="pair-status-text"></span>
+        <button class="pair-status-action" id="pair-status-action" type="button" hidden>Retry</button>
+      </div>
+
+      <form class="pair-form" id="pair-form" novalidate>
+        <label class="field-label" id="pin-label" for="pin-input">Enter the 4-digit PIN from your desktop</label>
+        <div class="pin-slots" id="pin-slots">
+          <span class="pin-slot" data-slot="0"></span>
+          <span class="pin-slot" data-slot="1"></span>
+          <span class="pin-slot" data-slot="2"></span>
+          <span class="pin-slot" data-slot="3"></span>
+          <input class="pin-input" id="pin-input" type="text" inputmode="numeric" pattern="[0-9]*"
+                 maxlength="4" autocomplete="one-time-code" autocapitalize="off" autocorrect="off"
+                 spellcheck="false" aria-labelledby="pin-label" enterkeyhint="done" disabled>
+        </div>
+        <p class="pair-error" id="pair-error" role="alert" hidden></p>
+        <button class="btn btn-primary btn-block" id="pair-submit" type="submit" disabled>Pair device</button>
+      </form>
+
+      <p class="pair-hint" id="pair-hint">Find the PIN in <strong>Settings &rsaquo; Remote mobile access</strong> on your desktop, or scan the pairing QR code to connect instantly.</p>
+    </div>
+
+    <footer class="pairing-foot">
+      <span id="pair-foot-note">Local network only</span>
+      <span class="foot-dot" aria-hidden="true"></span>
+      <span class="mono" id="pair-version">DSH Remote</span>
+    </footer>
+  </main>
+
+  <!-- Main app -->
+  <div class="app" id="app" hidden>
+    <header class="topbar">
+      <div class="topbar-side topbar-side-start">
+        <button class="iconbtn" id="btn-sessions" type="button" aria-label="Sessions" aria-haspopup="dialog">
+          <svg class="icon" aria-hidden="true"><use href="#i-drawer"></use></svg>
+        </button>
+        <span class="topbar-spacer" aria-hidden="true"></span>
+      </div>
+      <div class="titleblock">
+        <h1 class="session-title" id="session-title">Sessions</h1>
+        <p class="session-sub"><span class="statusdot" id="status-dot" aria-hidden="true"></span><span id="session-state">Connecting…</span></p>
+      </div>
+      <div class="topbar-side topbar-actions">
+        <button class="iconbtn" id="btn-new" type="button" aria-label="New session" aria-haspopup="dialog">
+          <svg class="icon" aria-hidden="true"><use href="#i-compose"></use></svg>
+        </button>
+        <button class="iconbtn" id="btn-menu" type="button" aria-label="More options" aria-haspopup="dialog">
+          <svg class="icon" aria-hidden="true"><use href="#i-more"></use></svg>
+        </button>
+      </div>
+    </header>
+
+    <div class="tabs" role="tablist" aria-label="Views">
+      <button class="tab is-active" id="tab-chat" type="button" role="tab" aria-selected="true" aria-controls="view-chat">Chat</button>
+      <button class="tab" id="tab-activity" type="button" role="tab" aria-selected="false" aria-controls="view-activity">Activity<span class="tab-badge" id="tab-badge" hidden></span></button>
+    </div>
+
+    <div class="banner" id="banner" role="status" hidden>
+      <svg class="icon banner-icon" aria-hidden="true"><use href="#i-wifi-off"></use></svg>
+      <span class="banner-text" id="banner-text">Reconnecting…</span>
+      <button class="banner-action" id="banner-action" type="button">Retry</button>
+    </div>
+
+    <main class="main">
+      <section class="view view-chat" id="view-chat" role="tabpanel" aria-labelledby="tab-chat">
+        <div class="chat-scroll" id="chat-scroll">
+          <div class="messages" id="messages" role="log" aria-live="polite" aria-relevant="additions"></div>
+        </div>
+        <button class="jump" id="jump" type="button" hidden>
+          <svg class="icon" aria-hidden="true"><use href="#i-chevron-down"></use></svg>
+          <span id="jump-label">Jump to latest</span>
+        </button>
+      </section>
+
+      <section class="view view-activity" id="view-activity" role="tabpanel" aria-labelledby="tab-activity" hidden>
+        <div class="activity-bar">
+          <div class="segmented" id="activity-filter" role="group" aria-label="Filter activity">
+            <button class="seg-btn is-active" type="button" data-filter="all" aria-pressed="true">All</button>
+            <button class="seg-btn" type="button" data-filter="tools" aria-pressed="false">Tools</button>
+            <button class="seg-btn" type="button" data-filter="errors" aria-pressed="false">Errors</button>
+          </div>
+          <span class="activity-live" id="activity-live"><span class="live-dot" aria-hidden="true"></span>Live</span>
+        </div>
+        <div class="activity-scroll" id="activity-scroll">
+          <div class="changes-panel" id="changes-panel" hidden></div>
+          <div class="activity-list" id="activity-list"></div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="composer" id="composer">
+      <div class="composer-shell">
+        <div class="queue-strip" id="queue-strip" hidden></div>
+        <div class="archived-banner" id="archived-banner" role="status" hidden>
+          <span class="archived-banner-text">Archived session — unarchive to continue</span>
+          <button class="archived-banner-action" id="btn-unarchive" type="button">Unarchive</button>
+        </div>
+        <div class="composer-box">
+          <textarea class="composer-input" id="composer-input" rows="1" maxlength="8000" placeholder="Message…"
+                    aria-label="Message" enterkeyhint="send" autocapitalize="sentences" spellcheck="true"></textarea>
+          <div class="composer-actions">
+            <button class="mic-btn" id="btn-mic" type="button" aria-label="Voice input" aria-pressed="false" hidden>
+              <svg class="icon" aria-hidden="true"><use href="#i-mic"></use></svg>
+            </button>
+            <button class="stop-btn" id="btn-stop" type="button" aria-label="Stop generating" hidden>
+              <svg class="icon" aria-hidden="true"><use href="#i-stop"></use></svg>
+            </button>
+            <button class="send-btn" id="btn-send" type="button" aria-label="Send message" disabled>
+              <svg class="icon" aria-hidden="true"><use href="#i-arrow-up"></use></svg>
+            </button>
+          </div>
+        </div>
+        <div class="composer-meta">
+          <span class="composer-note" id="composer-note">Ready</span>
+          <div class="context-meter" id="context-meter" role="group" aria-label="Context usage" hidden>
+            <span class="context-label" id="context-label" aria-hidden="true"></span>
+            <span class="context-track" aria-hidden="true"><span class="context-fill" id="context-fill"></span></span>
+            <span class="context-est" id="context-est" aria-hidden="true" hidden>est.</span>
+          </div>
+          <div class="composer-right">
+            <div class="prompt-mode" id="prompt-mode" role="group" aria-label="Send mode" hidden>
+              <button class="prompt-mode-btn is-active" type="button" data-mode="queue" aria-pressed="true">Queue</button>
+              <button class="prompt-mode-btn" type="button" data-mode="steer" aria-pressed="false">Steer</button>
+            </div>
+            <span class="composer-model mono" id="composer-model"></span>
+          </div>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <!-- Scrim + bottom sheet -->
+  <div class="scrim" id="scrim" hidden></div>
+  <section class="sheet" id="sheet" role="dialog" aria-modal="true" aria-labelledby="sheet-title" hidden>
+    <div class="sheet-grab" id="sheet-grab" aria-hidden="true"><span></span></div>
+    <div class="sheet-head">
+      <div class="sheet-heading">
+        <h2 class="sheet-title" id="sheet-title">Sessions</h2>
+        <p class="sheet-sub" id="sheet-sub" hidden></p>
+      </div>
+      <button class="iconbtn" id="sheet-close" type="button" aria-label="Close">
+        <svg class="icon" aria-hidden="true"><use href="#i-x"></use></svg>
+      </button>
+    </div>
+    <div class="sheet-body" id="sheet-body"></div>
+    <div class="sheet-foot" id="sheet-foot" hidden></div>
+  </section>
+
+  <div class="app-lock" id="app-lock" role="dialog" aria-modal="true" aria-labelledby="app-lock-title" hidden>
+    <div class="app-lock-card">
+      <div class="logo-mark app-lock-mark">
+        <svg class="logo-glyph" aria-hidden="true"><use href="#i-mark"></use></svg>
+      </div>
+      <h2 class="app-lock-title" id="app-lock-title">DSH Remote is locked</h2>
+      <p class="app-lock-text">Unlock with this phone's biometrics or screen lock to see the session.</p>
+      <button class="btn btn-primary btn-block" id="app-lock-unlock" type="button">Unlock</button>
+      <p class="app-lock-error" id="app-lock-error" role="alert" hidden></p>
+      <p class="app-lock-recovery">Can't unlock? Revoke this device from the desktop pairing panel and pair again.</p>
+    </div>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <noscript><p class="noscript">DSH Remote needs JavaScript enabled.</p></noscript>
+  <script src="/app.js?v=20" defer></script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+

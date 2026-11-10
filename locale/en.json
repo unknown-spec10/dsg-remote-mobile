@@ -1,0 +1,29 @@
+{
+  "meta": {
+    "title": "Remote mobile access",
+    "description": "Pair your phone with a secure QR code and control this Harness session from a mobile browser."
+  },
+  "section": {
+    "title": "Remote mobile access",
+    "subtitle": "Control this session from your phone over the local network."
+  },
+  "panel": {
+    "title": "Pair your phone",
+    "subtitle": "Scan the code, or enter the PIN at the address below.",
+    "address": "Address",
+    "pin": "PIN",
+    "expires": "Expires in",
+    "devices": "Paired devices",
+    "noDevices": "No devices paired yet.",
+    "rotate": "New PIN",
+    "revoke": "Revoke",
+    "revokeAll": "Revoke all",
+    "copy": "Copy link",
+    "copied": "Copied",
+    "open": "Open",
+    "disabled": "Remote access is off.",
+    "enabled": "Remote access is on.",
+    "pairing": "Waiting for a phone to pair.",
+    "lastSeen": "Last seen"
+  }
+}

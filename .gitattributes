@@ -1,0 +1,7 @@
+# Keep the source tree LF on every platform; mark shipped binaries explicitly.
+* text=auto eol=lf
+
+*.png binary
+*.ico binary
+*.jpg binary
+*.tgz binary

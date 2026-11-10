@@ -1,0 +1,57 @@
+# Runtime and development artefacts
+#
+# The plugin itself has no npm dependencies; these entries keep a developer
+# checkout and a Host next to it out of version control.
+
+# Dependencies
+node_modules/
+
+# npm publish / pack artefacts
+*.tgz
+package-lock.json
+.npm/
+npm-debug.log*
+
+# Runtime state written by the plugin beside the Host's DSH_HOME
+*.log
+remote-mobile-state.json
+remote-mobile-state.json.tmp
+remote-mobile-state.json.enabled
+remote-mobile-state.json.desk-key
+remote-mobile-state.json.public-url
+remote-mobile-state.json.debug.log
+remote-mobile-state.json.access.log
+var/
+
+# DSH runtime home if a checkout ever sits beside one
+.dsh/
+
+# Build output and tooling caches
+dist/
+build/
+coverage/
+.vite/
+.cache/
+.playwright/
+.puppeteer/
+*.tsbuildinfo
+*.pid
+
+# Editor / OS noise
+.DS_Store
+Thumbs.db
+desktop.ini
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# Local environment files. The plugin reads configuration from the Host, not
+# from a .env, but a developer checkout may still create one.
+.env
+.env.*
+!.env.example
+
+# Local secrets (a developer npm token must never be committed)
+.npmrc

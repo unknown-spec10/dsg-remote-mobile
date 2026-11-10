@@ -1,0 +1,76 @@
+{
+  "name": "@deep-podder/dsh-remote-mobile",
+  "version": "0.0.5",
+  "type": "module",
+  "description": "Secure local mobile companion for DeepSeek Harness: pair a phone with a QR code and control live sessions.",
+  "license": "MIT",
+  "author": "dsh-remote-mobile contributors",
+  "homepage": "https://github.com/unknown-spec10/dsg-remote-mobile#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/unknown-spec10/dsg-remote-mobile.git"
+  },
+  "bugs": {
+    "url": "https://github.com/unknown-spec10/dsg-remote-mobile/issues"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "keywords": [
+    "deepseek-harness",
+    "dsh",
+    "cordis-plugin",
+    "mobile",
+    "remote",
+    "pwa"
+  ],
+  "exports": {
+    ".": "./index.js",
+    "./client": "./client.js",
+    "./locale/*.json": "./locale/*.json",
+    "./icon": "./icon.svg",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "index.js",
+    "client.js",
+    "bridge.js",
+    "server.js",
+    "auth.js",
+    "push.js",
+    "qr.js",
+    "cordis.patch.yml",
+    "locale/*.json",
+    "icon.svg",
+    "vendor/qrcode.js",
+    "vendor/LICENSE",
+    "mobile/index.html",
+    "mobile/app.js",
+    "mobile/styles.css",
+    "mobile/manifest.webmanifest",
+    "mobile/sw.js",
+    "mobile/favicon.svg",
+    "mobile/icons/*.png",
+    "mobile/mock-server.js",
+    "mobile/README.md",
+    "README.md",
+    "PROTOCOL.md",
+    "SECURITY.md",
+    "LICENSE",
+    "docs/*.md",
+    "docs/screenshots/*.png"
+  ],
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    },
+    "client": {
+      "platform": "web",
+      "immediately": true,
+      "inject": ["@deepseek-ai/dsh-client-ui-conversation"]
+    }
+  }
+}
