@@ -485,6 +485,12 @@ export class RemoteMobileServer {
     // test path bypasses the automatic dispatch limiter, so it needs its own cap.
     this.pushTestWindows = new Map()
     this.replyPushAt = new Map()
+    // Listener lifecycle: a desktop restart can briefly overlap the previous
+    // process, so an EADDRINUSE is retried with backoff instead of leaving the
+    // plugin active with no phone server until the next full restart.
+    this.listenRetryTimer = null
+    this.listenAttempt = 0
+    this.listenError = null
     // Per-session assistant text, so a "reply ready" push can carry a short
     // excerpt instead of only the session title. Bounded to a few recent turns.
     this.replyBuffer = new Map()
@@ -506,8 +512,18 @@ export class RemoteMobileServer {
     if (this.statePath !== null) {
       try {
         persisted = JSON.parse(await readFile(this.statePath, 'utf8'))
-      } catch {
-        persisted = null
+      } catch (error) {
+        // A half-written or raced state file must not silently drop every
+        // paired device: fall back to the last good `.bak` when it parses.
+        this.log.warn?.(
+          `remote-mobile: pairing state unreadable (${error instanceof Error ? error.message : String(error)}); trying backup`,
+        )
+        try {
+          persisted = JSON.parse(await readFile(`${this.statePath}.bak`, 'utf8'))
+          this.log.warn?.('remote-mobile: restored pairing state from backup')
+        } catch {
+          persisted = null
+        }
       }
     }
     const secret = persisted !== null && typeof persisted.secret === 'string' && persisted.secret.length >= 32
@@ -553,13 +569,38 @@ export class RemoteMobileServer {
 
     this.wireBridge()
     if (this.enabled) {
-      try {
-        await this.listen()
-      } catch (error) {
-        this.log.error?.(`remote-mobile: server failed to start: ${error instanceof Error ? error.message : String(error)}`)
-      }
+      await this.startListening()
     } else {
       this.log.info?.('remote-mobile: disabled by the desktop switch')
+    }
+  }
+
+  /**
+   * Listen, retrying with backoff when the port is momentarily held by a
+   * previous desktop process. A failed first bind used to leave the plugin
+   * active but unreachable until the user restarted Harness again.
+   */
+  async startListening() {
+    if (!this.started || !this.enabled || this.listening) return
+    try {
+      await this.listen()
+      this.listenError = null
+      this.listenAttempt = 0
+    } catch (error) {
+      this.listenError = error instanceof Error ? error.message : String(error)
+      this.log.error?.(
+        `remote-mobile: server failed to start (attempt ${this.listenAttempt + 1}): ${this.listenError}`,
+      )
+      if (!this.started) return
+      const delays = [1000, 2000, 4000, 8000, 15000, 30000]
+      const delay = delays[Math.min(this.listenAttempt, delays.length - 1)]
+      this.listenAttempt += 1
+      clearTimeout(this.listenRetryTimer)
+      this.listenRetryTimer = setTimeout(() => {
+        this.listenRetryTimer = null
+        void this.startListening()
+      }, delay)
+      this.listenRetryTimer.unref?.()
     }
   }
 
@@ -631,6 +672,7 @@ export class RemoteMobileServer {
     }
     this.server = server
     this.listening = true
+    this.listenError = null
     const address = server.address()
     if (address !== null && typeof address === 'object') this.port = address.port
     this.startHeartbeat()
@@ -751,6 +793,10 @@ export class RemoteMobileServer {
   async stop() {
     if (!this.started) return
     this.started = false
+    clearTimeout(this.listenRetryTimer)
+    this.listenRetryTimer = null
+    this.listenAttempt = 0
+    this.listenError = null
     if (this.unsubscribeBridge !== null) {
       try {
         this.unsubscribeBridge()
@@ -799,8 +845,21 @@ export class RemoteMobileServer {
         state.push = this.push.exportState()
       }
       const payload = JSON.stringify(state, null, 2)
+      // Keep one generation of the previous good state: a plugin reload can
+      // race the old and new server, and losing the device list would force
+      // every phone to pair again.
+      if (this.statePath !== null) {
+        try {
+          const existing = await readFile(this.statePath, 'utf8')
+          JSON.parse(existing)
+          await writeFile(`${this.statePath}.bak`, existing, { mode: 0o600 })
+        } catch {
+          // no previous state, or it was already corrupt
+        }
+      }
       await writeFile(tmp, payload, { mode: 0o600 })
       await rename(tmp, this.statePath)
+
     } catch (error) {
       this.log.warn?.(`remote-mobile: cannot persist pairing state: ${error instanceof Error ? error.message : String(error)}`)
     }
@@ -1332,6 +1391,8 @@ export class RemoteMobileServer {
       const devices = auth.devices()
       return {
         enabled: false,
+        listening: false,
+        listenError: this.listenError,
         version: VERSION,
         port: this.port,
         bindHost: this.bindHost,
@@ -1361,6 +1422,8 @@ export class RemoteMobileServer {
     const connectedNames = [...new Set([...this.peers].map((peer) => peer.device.name))]
     return {
       enabled: true,
+      listening: this.listening,
+      listenError: this.listenError,
       version: VERSION,
       port: this.port,
       bindHost: this.bindHost,
