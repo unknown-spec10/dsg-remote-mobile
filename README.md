@@ -292,13 +292,16 @@ The package publishes publicly to npm as
    no dependencies, so the published files are the tracked source.
 
 Version bumps touch `package.json`, `index.js`, `server.js`, `mobile/app.js`
-(`FALLBACK_VERSION`) and the PROTOCOL example; `release-check` enforces that they agree.
+(`FALLBACK_VERSION`), `mobile/mock-server.js` and the PROTOCOL example; `release-check` enforces
+that they agree.
 
 ## Documentation
 
 - [npm package](https://www.npmjs.com/package/@deep-podder/dsh-remote-mobile) ·
   [source on GitHub](https://github.com/unknown-spec10/dsg-remote-mobile) ·
   [issues](https://github.com/unknown-spec10/dsg-remote-mobile/issues)
+- [AGENT.md](AGENT.md) and [.agent/](.agent/README.md) — onboarding, architecture, deployment,
+  checks, troubleshooting and design decisions for anyone (agent or human) working in this repo.
 - [PROTOCOL.md](PROTOCOL.md) — authoritative HTTP/WebSocket wire contract.
 - [SECURITY.md](SECURITY.md) — threat model and revocation/rotation procedures; report
   vulnerabilities through the repository's private advisory form.
