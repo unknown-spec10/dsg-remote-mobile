@@ -3,7 +3,12 @@
 // expiry countdown and paired-device management. All data comes from the Host
 // server over a key-gated loopback endpoint.
 window.__ModuleLoader__.load({
-  id: 'dsh-remote-mobile',
+  // The registration id MUST equal the client module's manifest row id (the
+  // package name). The module system keys factories by package name; a short
+  // id (e.g. `dsh-remote-mobile`) leaves the package row unresolved, so the
+  // bundle is loaded a second time and the second registration throws
+  // "duplicate factory registration".
+  id: '@deep-podder/dsh-remote-mobile',
   factory(require) {
     const React = require('react')
     const h = React.createElement

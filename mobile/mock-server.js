@@ -34,7 +34,7 @@ import { networkInterfaces } from 'node:os';
 const HERE = dirname(fileURLToPath(import.meta.url));
 const PORT = Number(process.env.PORT || process.argv[2] || 3456);
 const HOST = process.env.HOST || '0.0.0.0';
-const VERSION = '0.0.5';
+const VERSION = '0.0.6';
 const PAIRING_TOKEN = randomBytes(24).toString('base64url');
 const RATE_WINDOW_MS = Number(process.env.RM_RATE_WINDOW_MS || 5 * 60 * 1000);
 const RATE_MAX = Number(process.env.RM_RATE_MAX || 5);

@@ -1,6 +1,6 @@
 {
   "name": "@deep-podder/dsh-remote-mobile",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "type": "module",
   "description": "Secure local mobile companion for DeepSeek Harness: pair a phone with a QR code and control live sessions.",
   "license": "MIT",

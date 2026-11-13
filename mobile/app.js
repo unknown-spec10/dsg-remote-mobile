@@ -11,7 +11,7 @@
   'use strict';
 
   var SVGNS = 'http://www.w3.org/2000/svg';
-  var FALLBACK_VERSION = '0.0.5';
+  var FALLBACK_VERSION = '0.0.6';
   var LS_ACTIVE = 'dshrm.activeSession.v1';
   var PIN_LENGTH = 4;
   var MAX_TOOL_OUTPUT = 120000;

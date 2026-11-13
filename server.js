@@ -13,7 +13,7 @@ import { createAuth, equals } from './auth.js'
 import { createPushService } from './push.js'
 import { qrSvg } from './qr.js'
 
-const VERSION = '0.0.5'
+const VERSION = '0.0.6'
 const WS_GUID = '258EAFA5-E914-47DA-95CA-C5AB0DC85B11'
 const MAX_MESSAGE_BYTES = 1024 * 1024
 const MAX_BODY_BYTES = 64 * 1024

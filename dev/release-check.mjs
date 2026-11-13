@@ -221,6 +221,17 @@ assert.match(
   'policy-changing commands must also be hidden by first-party definition id',
 )
 
+// The client bundle registers its module id itself. It must equal the package
+// name (the client-modules manifest row id), or the module system loads the
+// bundle twice and web boot fails with "duplicate factory registration".
+const clientRegistration = /__ModuleLoader__\.load\(\{\s*(?:\/\/[^\n]*\n\s*)*id:\s*'([^']+)'/.exec(read('client.js'))
+assert.ok(clientRegistration, 'client.js must call window.__ModuleLoader__.load with a string id')
+assert.equal(
+  clientRegistration[1],
+  pkg.name,
+  'client.js registration id must equal the package name (duplicate-factory regression)',
+)
+
 // Every PUBLISHED text file must be free of the build machine's personal paths.
 // This covers the mock server, mobile docs and anything else shipped, not just
 // the root docs checked above.

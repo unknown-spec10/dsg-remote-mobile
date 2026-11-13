@@ -18,7 +18,7 @@ const source = readFileSync(new URL('../client.js', import.meta.url), 'utf8')
 new Function('window', source)(window)
 
 assert.ok(loaded, 'client bundle registers a module loader entry')
-assert.equal(loaded.id, 'dsh-remote-mobile')
+assert.equal(loaded.id, '@deep-podder/dsh-remote-mobile', 'client registration id must equal the package name')
 assert.equal(typeof loaded.factory, 'function')
 
 const react = {

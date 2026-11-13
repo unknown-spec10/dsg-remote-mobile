@@ -364,7 +364,7 @@ A cold session answers `code: "not-live"`, an unknown or hidden command `code: "
 ### Server → Client
 
 ```jsonc
-{ "type": "ready", "version": "0.0.5", "server": { "name", "port" },
+{ "type": "ready", "version": "0.0.6", "server": { "name", "port" },
   "device": { "id", "name", "canApprove": true }, "sessions": [], "workspaces": [],
   "activeSessionId": null, "queue": [],
   "limits": { "image": { "maxBytes", "maxDimension", "maxImages",

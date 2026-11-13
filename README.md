@@ -72,9 +72,11 @@ the desktop-style project grouping, the chat surface and the Host command palett
 
 ## Requirements
 
-- **DeepSeek Harness 0.2.2-rc.1** with the Desktop/Web profile (the desktop pairing panel is
-  a client module of the Harness Web UI). Other 0.2.2-rc builds may work; the Host API surface
-  this plugin uses is documented in [docs/api-notes.md](docs/api-notes.md).
+- **DeepSeek Harness 0.2.2-rc.3** with the Desktop/Web profile (the desktop pairing panel is
+  a client module of the Harness Web UI). The plugin's scoped client registration was verified
+  against 0.2.2-rc.3; earlier 0.2.2-rc builds may work, but the client-module registration id
+  must match the installed package name (the bridge Host API surface this plugin uses is
+  documented in [docs/api-notes.md](docs/api-notes.md)).
 - **Node 22 or newer** (the Host's runtime; the plugin itself has no npm dependencies and uses
   only `node:` built-ins). `dev/` checks use the built-in `fetch`.
 - A phone with a current browser. For use away from the LAN, **Tailscale** (or any HTTPS

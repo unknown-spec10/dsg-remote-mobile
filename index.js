@@ -4,7 +4,7 @@
 import { createBridge } from './bridge.js'
 import { RemoteMobileServer } from './server.js'
 
-const VERSION = '0.0.5'
+const VERSION = '0.0.6'
 
 /**
  * @param {object} ctx Cordis host context
